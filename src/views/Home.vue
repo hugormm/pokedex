@@ -10,30 +10,21 @@
           <div class="card-body bg-pokebola bg-normal">
             <div class="pokemon">
               <transition 
-                @after-enter="exibirEvolucoesTransition"
-                @before-leave="exibirEvolucoes = false"
                 name="pulo" 
                 type="animation"   
               >                           
                 <img :src="require(`@/assets/imgs/pokemons/${pokemon.id.toString().padStart(3, '0')}.png`)" v-if="exibir">
               </transition>
             </div>
-            <!--
-            <div class="evolucoes">
-              <transition name="fade" v-for="e in exibirEvolucoes.chain.evolves_to" :key="e">
-                <img :src="require(`@/assets/imgs/pokemons/${e.toString().padStart(3, '0')}.png`)" v-if="exibirEvolucoes">
-              </transition>
-            </div>
-            -->
           </div>
 
           <div class="card-footer">
          
             <nav class="nav nav-pills nav-fill">
               <!-- menu de navegação -->
-              <router-link class="nav-item nav-link text-white" :to="{ path: '/sobre' }" exact-active-class="active">Sobre</router-link>
+              <router-link class="nav-item nav-link text-white" :to="{ path: '/sobre' }" exact-active-class="active">About</router-link>
               <router-link class="nav-item nav-link text-white" :to="{ path: '/status' }" exact-active-class="active">Status</router-link>
-              <router-link class="nav-item nav-link text-white" :to="{ path: '/habilidades' }" exact-active-class="active">Habilidades</router-link>
+              <router-link class="nav-item nav-link text-white" :to="{ path: '/habilidades' }" exact-active-class="active">Abilities</router-link>
             </nav>
 
             <div class="detalhes">
@@ -63,16 +54,16 @@
         <div class="row mt-3">
           <div class="col">
             <select class="form-select" v-model="ordenacao">
-              <option value="" disabled>Selecione a ordem</option>
-              <option value="1">Id crescente</option>
-              <option value="2">Id decrescrente</option>
-              <option value="3">De A - Z</option>
-              <option value="4">De Z - A (localeCompare)</option>
+              <option value="" disabled>Select the order</option>
+              <option value="1">ID ascending</option>
+              <option value="2">ID descending</option>
+              <option value="3">From A - Z</option>
+              <option value="4">From Z - A (localeCompare)</option>
             </select>
           </div>
         
           <div class="col">
-            <input type="text" class="form-control" placeholder="Pesquisar pokémon" v-model="search">
+            <input type="text" class="form-control" placeholder="Search pokémon" v-model="search">
           </div>
         </div>
 
@@ -81,7 +72,8 @@
           <transition-group name="ordenacao">
             <!-- início listagem dinâmica -->
             <div v-for="(p, index) in pokemons" :key="index" class="cartao-pokemon bg-dark" @click="analisarPokemon(p)">
-              <h1>{{ p.id.toString().padStart(3, '0') }} {{ p.name }}</h1>
+              <h1>{{ p.name }}</h1>
+              <span>{{ p.id.toString().padStart(3, '0') }}</span>
               <div class="cartao-pokemon-img">
                 <transition appear enter-active-class="animate__animated animate__fadeInDown">
                   <img :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`">
@@ -124,8 +116,10 @@ export default {
         .then(data => {
           data.results.forEach((pokemon) => {
             pokemon.id = pokemon.url.split('/')[6]
+            pokemon.name = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)
             this.pokemons.push(pokemon)
           })
+          console.log(data)
           const pokemons = JSON.stringify(data)
           localStorage.setItem('Pokemons', pokemons)
         })
@@ -139,16 +133,16 @@ export default {
     }, 
     analisarPokemon(p) {
 
-      fetch(`https://pokeapi.co/api/v2/pokemon/${p.name}/`)
+      let name = p.name.toLowerCase()
+
+      fetch(`https://pokeapi.co/api/v2/pokemon/${name}/`)
       .then(response => response.json())
       .then(data => {
         this.pokemon = data
+        this.pokemon.name = this.pokemon.name.charAt(0).toUpperCase() + this.pokemon.name.slice(1)
       })
-
-      fetch(`https://pokeapi.co/api/v2/evolution-chain/${p.id}/`)
-      .then(response => response.json())
-      .then(data => {
-        this.pokemonEvolution = data
+      .catch((error) => {
+        console.log(error)
       })
 
       let alterarPokemon = false   
@@ -160,8 +154,7 @@ export default {
         alterarPokemon = true
       }
       this.exibir = !this.exibir
-      this.pokemon = p
-      this.exibirEvolucoes = !this.exibirEvolucoes  
+      this.pokemon = p 
 
       if(!this.exibir && !alterarPokemon) {  
         this.pokemon = {}                 
@@ -180,6 +173,7 @@ export default {
       console.log(this.pokemons)
     },
     ordenacao(valorNovo) {
+      console.log(this.pokemons)
       if(valorNovo == 1) { 
         this.pokemons.sort((proximo, atual) => {   
           if(atual.id < proximo.id) {

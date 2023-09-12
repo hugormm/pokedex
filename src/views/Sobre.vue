@@ -1,13 +1,13 @@
 <template>
     <div>
         <div v-if="!pokemon.id">
-            Selecione um Pokemon
+            Select one Pokemon
         </div>
         
         <div v-else>
-            <p>Identificador: {{ pokemon.id }}</p>
-            <p>Nome: {{ name }}</p>
-            <p>Tipo: {{ tipo }}</p>
+            <p>Id: {{ pokemon.id }}</p>
+            <p>Name: {{ name }}</p>
+            <p>Type: {{ tipo }}</p>
         </div>   
     </div>
 </template>
@@ -24,7 +24,7 @@ export default {
         },
         tipo() {
             if(this.pokemon.types) {
-                return this.pokemon.types[0].type.name
+                return this.pokemon.types[0].type.name.charAt(0).toUpperCase() + this.pokemon.types[0].type.name.slice(1)
             } else {
                 return '---'
             }

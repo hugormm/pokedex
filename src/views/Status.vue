@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="!pokemon.stats">
-            Selecione um Pokemon
+            Select one Pokemon
         </div>
         <div v-else>
             <span>HP:</span>

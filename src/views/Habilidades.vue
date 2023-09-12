@@ -1,7 +1,7 @@
 <template>
     <div>
         <div v-if="!pokemon.abilities">
-            Selecione um Pokemon
+            Select one Pokemon
         </div>
         <div v-else>
             <table class="table text-white">
@@ -26,27 +26,7 @@ export default {
     },
     data: () => ({
         habilidade: ''
-    }),
-    /*
-    methods: {
-        adicionarHabilidade() {
-            this.$emit('addHabilidade', this.habilidade)
-            this.habilidade = ''
-        }
-    },
-    computed: {
-        habilidadesOrdenadas() {
-
-            let habilidades = []
-            this.pokemon.abilities.forEach(element => {
-                console.log(element.ability.name)
-                habilidades.push(element.ability.name)
-            });
-                
-            return habilidades.sort()  //ordena o array por ordem alfabetica
-        }
-    }*/
-   
+    })
 }
 </script>
 
