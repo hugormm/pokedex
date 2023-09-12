@@ -72,8 +72,7 @@
           </div>
         
           <div class="col">
-            <!--<input type="text" class="form-control" placeholder="Pesquisar pokémon" v-model="nomePokemon" @keyup.enter="filtrarPokemonNome"> -->
-            <input type="text" class="form-control" placeholder="Pesquisar pokémon" v-model="nomePokemon2">
+            <input type="text" class="form-control" placeholder="Pesquisar pokémon" v-model="search">
           </div>
         </div>
 
@@ -110,15 +109,75 @@ export default {
     pokemonEvolution: {},
     pokemons: [],
     ordenacao: '',
-    nomePokemon: '',
+    search: '',
     nomePokemon2: ''
   }),
-  watch: {
-    nomePokemon2(valorNovo) {
-      let pokemonsFiltrados = this.pokemons.filter((item) => {
-        item.name.includes(valorNovo)
-        console.log(pokemonsFiltrados)
+  methods: {
+    showPokemons() {
+      if(localStorage.Pokemons) {
+        let pokemons = localStorage.getItem('Pokemons')
+        let objPokemons = JSON.parse(pokemons)
+        this.pokemons = objPokemons.results
+      } else {
+        fetch('https://pokeapi.co/api/v2/pokemon?limit=806')
+        .then(response => response.json())
+        .then(data => {
+          data.results.forEach((pokemon) => {
+            pokemon.id = pokemon.url.split('/')[6]
+            this.pokemons.push(pokemon)
+          })
+          const pokemons = JSON.stringify(data)
+          localStorage.setItem('Pokemons', pokemons)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+      }
+    },
+    exibirEvolucoesTransition() {
+      this.exibirEvolucoes = true
+    }, 
+    analisarPokemon(p) {
+
+      fetch(`https://pokeapi.co/api/v2/pokemon/${p.name}/`)
+      .then(response => response.json())
+      .then(data => {
+        this.pokemon = data
       })
+
+      fetch(`https://pokeapi.co/api/v2/evolution-chain/${p.id}/`)
+      .then(response => response.json())
+      .then(data => {
+        this.pokemonEvolution = data
+      })
+
+      let alterarPokemon = false   
+      if((this.pokemon.id != p.id) && this.exibir) {
+        setTimeout(() => {
+          this.analisarPokemon(p)
+        }, 1000)
+
+        alterarPokemon = true
+      }
+      this.exibir = !this.exibir
+      this.pokemon = p
+      this.exibirEvolucoes = !this.exibirEvolucoes  
+
+      if(!this.exibir && !alterarPokemon) {  
+        this.pokemon = {}                 
+      }
+    }
+  },
+  watch: {
+    search(valorNovo) {
+      let pokemons = localStorage.getItem('Pokemons')
+      let objPokemons = JSON.parse(pokemons)
+      this.pokemons = objPokemons.results
+      let pokemonsFiltrados = this.pokemons.filter((item) => {
+        return item.name.includes(valorNovo)
+      })
+      this.pokemons = pokemonsFiltrados
+      console.log(this.pokemons)
     },
     ordenacao(valorNovo) {
       if(valorNovo == 1) { 
@@ -163,62 +222,6 @@ export default {
   },
   created() {
     this.showPokemons()
-  },
-  methods: {
-    showPokemons() {
-      fetch('https://pokeapi.co/api/v2/pokemon?limit=806')
-      .then(response => response.json())
-      .then(data => {
-        this.pokemons = data.results
-        this.pokemons.forEach((el, index) => {
-          el.id = index + 1
-        })
-      })
-    },
-    exibirEvolucoesTransition() {
-      this.exibirEvolucoes = true
-    }, 
-    analisarPokemon(p) {
-
-      fetch(`https://pokeapi.co/api/v2/pokemon/${p.name}/`)
-      .then(response => response.json())
-      .then(data => {
-        this.pokemon = data
-      })
-
-      fetch(`https://pokeapi.co/api/v2/evolution-chain/${p.id}/`)
-      .then(response => response.json())
-      .then(data => {
-        this.pokemonEvolution = data
-      })
-
-      let alterarPokemon = false   
-      if((this.pokemon.id != p.id) && this.exibir) {
-        setTimeout(() => {
-          this.analisarPokemon(p)
-        }, 1000)
-
-        alterarPokemon = true
-      }
-      this.exibir = !this.exibir
-      this.pokemon = p
-      this.exibirEvolucoes = !this.exibirEvolucoes  
-
-      if(!this.exibir && !alterarPokemon) {  
-        this.pokemon = {}                 
-      }
-    },
-
-    /*
-    filtrarPokemonNome() {
-      fetch(`http://localhost:3000/pokemons?nome_like=${this.nomePokemon}`)
-      .then(response => response.json())
-      .then(data => {
-        this.pokemons = data
-        console.log(this.pokemons)
-      })
-    }
-    */
   }
 }
 </script>
