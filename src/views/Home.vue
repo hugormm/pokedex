@@ -14,17 +14,17 @@
                 @before-leave="exibirEvolucoes = false"
                 name="pulo" 
                 type="animation"   
-              >                                 <!--</transition> MANUAL  :duration="500"  MiliSegundos   ou :duration="{ enter: 500, leave: 1500 }"-->
-                <img :src="require(`@/assets/imgs/pokemons/${pokemon.imagem}`)" v-if="exibir">
+              >                           
+                <img :src="require(`@/assets/imgs/pokemons/${pokemon.id.toString().padStart(3, '0')}.png`)" v-if="exibir">
               </transition>
             </div>
-
+            <!--
             <div class="evolucoes">
-              <transition name="fade" v-for="e in pokemon.evolucoes" :key="e">
+              <transition name="fade" v-for="e in exibirEvolucoes.chain.evolves_to" :key="e">
                 <img :src="require(`@/assets/imgs/pokemons/${e.toString().padStart(3, '0')}.png`)" v-if="exibirEvolucoes">
               </transition>
             </div>
-
+            -->
           </div>
 
           <div class="card-footer">
@@ -40,7 +40,7 @@
               <!-- exibe dados de acordo com o menu de navegação -->
             
 
-              <router-view v-slot="{ Component }" :pokemon="pokemon" @addHabilidade="addHabilidade" @removeHabilidade="removeHabilidade">
+              <router-view v-slot="{ Component }" :pokemon="pokemon">
                 <transition enter-active-class="animate__animated animate__zoomIn">
                   <component :is="Component" />
                 </transition>
@@ -81,12 +81,11 @@
           <div class="pokedex-catalogo">
           <transition-group name="ordenacao">
             <!-- início listagem dinâmica -->
-            <div v-for="p in pokemons" :key="p.id" :class="`cartao-pokemon bg-${p.tipo}`" @click="analisarPokemon(p)">
-              <h1>{{ p.id }} {{ p.nome }}</h1>
-              <span>{{ p.tipo }}</span>
+            <div v-for="(p, index) in pokemons" :key="index" class="cartao-pokemon bg-dark" @click="analisarPokemon(p)">
+              <h1>{{ p.id.toString().padStart(3, '0') }} {{ p.name }}</h1>
               <div class="cartao-pokemon-img">
                 <transition appear enter-active-class="animate__animated animate__fadeInDown">
-                  <img :src="require(`@/assets/imgs/pokemons/${p.imagem}`)">
+                  <img :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`">
                 </transition>
               </div>
             </div>
@@ -108,6 +107,7 @@ export default {
     exibir: false,
     exibirEvolucoes: false,
     pokemon: {},
+    pokemonEvolution: {},
     pokemons: [],
     ordenacao: '',
     nomePokemon: '',
@@ -115,86 +115,84 @@ export default {
   }),
   watch: {
     nomePokemon2(valorNovo) {
-      fetch(`http://localhost:3000/pokemons?nome_like=${valorNovo}`)
-      .then(response => response.json())
-      .then(data => {
-        this.pokemons = data
-        console.log(this.pokemons)
+      let pokemonsFiltrados = this.pokemons.filter((item) => {
+        item.name.includes(valorNovo)
+        console.log(pokemonsFiltrados)
       })
     },
     ordenacao(valorNovo) {
-      if(valorNovo == 1) {  // id crescente
-        this.pokemons.sort((proximo, atual) => {    //o sort trabalhao com o proximo e o actual pra ver se tem q trocar. para 
-          if(atual.id < proximo.id) {
-            return 1
-          } else if(atual.id > proximo.id) {
-            return -1
-          }
-
-          return 0
-        })   
-      }
-
-      if(valorNovo == 2) {  // id decrescente
-        this.pokemons.sort((proximo, atual) => {    //o sort trabalhao com o proximo e o actual pra ver se tem q trocar. para 
-          if(atual.id < proximo.id) {
-            return -1
-          } else if(atual.id > proximo.id) {
-            return 1
-          }
-
-          return 0
-        })   
-      }
-
-      if(valorNovo == 3) {  // por nome A-Z
-        this.pokemons.sort((proximo, atual) => {    //o sort trabalhao com o proximo e o actual pra ver se tem q trocar. para 
-          if(atual.nome < proximo.nome) {
-            return 1
-          } else if(atual.nome > proximo.nome) {
-            return -1
-          }
-
-          return 0
-        })   
-      }
-
-      if(valorNovo == 4) {  // por nome Z-A LOCALE COMPARE   Compara por idioma local
+      if(valorNovo == 1) { 
         this.pokemons.sort((proximo, atual) => {   
-          // let resultado1 = atual.nome.localeCompare(proximo.nome)  // -1 indica q a string de referencia vem antes da string do parametro   (o sort vai trocar as posicoes par ordem inversa)
-          // let resultado2 = proximo.nome.localeCompare(atual.nome)  // 1 indica q a string de referencia vem depois da string do parametro    // 0 se forem iguais
-          
-          //ordenacao decrescente 
-
-          return atual.nome.localeCompare(proximo.nome)  // retorna -1  e o sort vai trocar as posicoes pra listar d Z-A   podemos passar 2 parametro pra indicar ididoma (default browser)
-          
+          if(atual.id < proximo.id) {
+            return 1
+          } else if(atual.id > proximo.id) {
+            return -1
+          }
+          return 0
         })   
       }
 
-      //metodo sort 
-      // return 1 para indicar q a ordem esta correta
-      // return -1 para indicar q a ordem esta incorreta (trocados)
-      // return 0 para indicar que sao iguais ( nada deve ser feito )
+      if(valorNovo == 2) {  
+        this.pokemons.sort((proximo, atual) => {    
+          if(atual.id < proximo.id) {
+            return -1
+          } else if(atual.id > proximo.id) {
+            return 1
+          }
+          return 0
+        })   
+      }
+
+      if(valorNovo == 3) { 
+        this.pokemons.sort((proximo, atual) => {   
+          if(atual.name < proximo.name) {
+            return 1
+          } else if(atual.name > proximo.name) {
+            return -1
+          }
+          return 0
+        })   
+      }
+
+      if(valorNovo == 4) { 
+        this.pokemons.sort((proximo, atual) => {   
+          return atual.name.localeCompare(proximo.name)  
+        })   
+      }
     }
   },
   created() {
-    fetch('http://localhost:3000/pokemons')
-      .then(response => response.json())
-      .then(data => {
-        this.pokemons = data
-        console.log(this.pokemons)
-      })
+    this.showPokemons()
   },
   methods: {
+    showPokemons() {
+      fetch('https://pokeapi.co/api/v2/pokemon?limit=806')
+      .then(response => response.json())
+      .then(data => {
+        this.pokemons = data.results
+        this.pokemons.forEach((el, index) => {
+          el.id = index + 1
+        })
+      })
+    },
     exibirEvolucoesTransition() {
       this.exibirEvolucoes = true
     }, 
     analisarPokemon(p) {
-      //para clicar noutro pokemon e desaparecer o actual e de seguida aparecer o novo vamos fazer uma verificacao
-      //se o pokemon atual e diferente do clicado
-      // se o exibir e true
 
-      let alterarPokemon = false    // variavel q define s o pokemon esta a ser alterado
+      fetch(`https://pokeapi.co/api/v2/pokemon/${p.name}/`)
+      .then(response => response.json())
+      .then(data => {
+        this.pokemon = data
+      })
+
+      fetch(`https://pokeapi.co/api/v2/evolution-chain/${p.id}/`)
+      .then(response => response.json())
+      .then(data => {
+        this.pokemonEvolution = data
+      })
+
+      let alterarPokemon = false   
       if((this.pokemon.id != p.id) && this.exibir) {
         setTimeout(() => {
           this.analisarPokemon(p)
@@ -204,22 +202,13 @@ export default {
       }
       this.exibir = !this.exibir
       this.pokemon = p
-      this.exibirEvolucoes = !this.exibirEvolucoes  // para as imagens das evolucoes aparecerm no momento certo
+      this.exibirEvolucoes = !this.exibirEvolucoes  
 
-      if(!this.exibir && !alterarPokemon) {  //remover os dados ao remover pokemon (this exibir remove os dados e !alterarPokemon verifica 
-        this.pokemon = {}                     // se esta a ser mudado para o outro e oculta o objeto pokemon vazio q aparece por instantes quando se muda de pokemon)
+      if(!this.exibir && !alterarPokemon) {  
+        this.pokemon = {}                 
       }
     },
-    addHabilidade(habilidade) {
-      if(this.pokemon.habilidades) {
-        this.pokemon.habilidades.push(habilidade)
-      }
-    },
-    removeHabilidade(index) {
-      if(this.pokemon.habilidades[index]) {
-        this.pokemon.habilidades.splice(index, 1)  //removemos com o splice
-      }
-    },
+
     /*
     filtrarPokemonNome() {
       fetch(`http://localhost:3000/pokemons?nome_like=${this.nomePokemon}`)
@@ -298,7 +287,7 @@ body {
     float: right;
 }
 
-.bg-grama {
+.bg-grass {
   background-color: #2d8f78;
 }
 

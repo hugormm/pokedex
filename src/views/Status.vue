@@ -1,62 +1,62 @@
 <template>
     <div>
-        <div v-if="!pokemon.status">
+        <div v-if="!pokemon.stats">
             Selecione um Pokemon
         </div>
         <div v-else>
-            <span>Força:</span>
+            <span>HP:</span>
             <div class="progress mb-2">
                 <div 
                     class="progress-bar" 
                     role="progressbar" 
-                    :style="`width: ${pokemon.status.forca}%;`" 
-                    :aria-valuenow="pokemon.status.forca" 
+                    :style="`width: ${pokemon.stats[0].base_stat}%;`" 
+                    :aria-valuenow="pokemon.stats[0].base_stat" 
                     aria-valuemin="0" 
                     aria-valuemax="100"
                 >
-                    {{ pokemon.status.forca }}
+                    {{ pokemon.stats[0].base_stat }}
                 </div>
             </div>
 
-            <span>Agilidade:</span>
+            <span>Attack:</span>
             <div class="progress mb-2">
                 <div 
                     class="progress-bar" 
                     role="progressbar" 
-                    :style="`width: ${pokemon.status.agilidade}%;`" 
-                    :aria-valuenow="pokemon.status.agilidade" 
+                    :style="`width: ${pokemon.stats[1].base_stat}%;`" 
+                    :aria-valuenow="pokemon.stats[1].base_stat" 
                     aria-valuemin="0" 
                     aria-valuemax="100"
                 >
-                {{ pokemon.status.agilidade }}
+                {{ pokemon.stats[1].base_stat }}
                 </div>
             </div>
 
-            <span>Ataque:</span>
+            <span>Defense:</span>
             <div class="progress mb-2">
                 <div 
                     class="progress-bar" 
                     role="progressbar" 
-                    :style="`width: ${pokemon.status.ataque}%;`" 
-                    :aria-valuenow="pokemon.status.ataque" 
+                    :style="`width: ${pokemon.stats[2].base_stat}%;`" 
+                    :aria-valuenow="pokemon.stats[2].base_stat" 
                     aria-valuemin="0" 
                     aria-valuemax="100"
                 >
-                {{ pokemon.status.ataque }}
+                {{ pokemon.stats[2].base_stat }}
                 </div>
             </div>
             
-            <span>Defesa:</span>
+            <span>Speed:</span>
             <div class="progress mb-2">
                 <div 
                     class="progress-bar" 
                     role="progressbar" 
-                    :style="`width: ${pokemon.status.defesa}%;`" 
-                    :aria-valuenow="pokemon.status.defesa" 
+                    :style="`width: ${pokemon.stats[5].base_stat}%;`" 
+                    :aria-valuenow="pokemon.stats[5].base_stat" 
                     aria-valuemin="0" 
                     aria-valuemax="100"
                 >
-                {{ pokemon.status.defesa }}
+                {{ pokemon.stats[5].base_stat }}
                 </div>
             </div>
         </div>   
