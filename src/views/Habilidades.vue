@@ -7,8 +7,8 @@
             <table class="table text-white">
                 <tbody>
                     <transition-group name="lista">
-                        <tr v-for="ab in pokemon.abilities" :key="ab">
-                            <td>{{ ab.ability.name }}</td>
+                        <tr v-for="(move, index) in pokemon.moves.slice(0,4)" :key="index">
+                            <td>{{ move.move.name }}</td>
                         </tr>
                     </transition-group>
                 </tbody>
@@ -33,5 +33,9 @@ export default {
 <style scoped>
 .table td {
     border: none;
+    background-color: #333;
+    color:#fff;
 }
+
+
 </style>

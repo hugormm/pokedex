@@ -13,7 +13,7 @@
                 name="pulo" 
                 type="animation"   
               >                           
-                <img :src="require(`@/assets/imgs/pokemons/${pokemon.id.toString().padStart(3, '0')}.png`)" v-if="exibir">
+                <img class="img_palco" :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`" v-if="exibir">
               </transition>
             </div>
           </div>
@@ -24,7 +24,7 @@
               <!-- menu de navegação -->
               <router-link class="nav-item nav-link text-white" :to="{ path: '/sobre' }" exact-active-class="active">About</router-link>
               <router-link class="nav-item nav-link text-white" :to="{ path: '/status' }" exact-active-class="active">Status</router-link>
-              <router-link class="nav-item nav-link text-white" :to="{ path: '/habilidades' }" exact-active-class="active">Abilities</router-link>
+              <router-link class="nav-item nav-link text-white" :to="{ path: '/habilidades' }" exact-active-class="active">Moves</router-link>
             </nav>
 
             <div class="detalhes">
@@ -53,7 +53,7 @@
 
         <div class="row mt-3">
           <div class="col">
-            <select class="form-select" v-model="ordenacao">
+            <select class="form-select" v-model="order">
               <option value="" disabled>Select the order</option>
               <option value="1">ID ascending</option>
               <option value="2">ID descending</option>
@@ -68,20 +68,24 @@
         </div>
 
         <div class="row">
-          <div class="pokedex-catalogo">
+          <div class="pokedex-catalogo d-flex justify-content-center">
+
           <transition-group name="ordenacao">
+
             <!-- início listagem dinâmica -->
-            <div v-for="(p, index) in pokemons" :key="index" class="cartao-pokemon bg-dark" @click="analisarPokemon(p)">
-              <h1>{{ p.name }}</h1>
-              <span>{{ p.id.toString().padStart(3, '0') }}</span>
+            <div v-for="(pokemon, id) in pokemons" :key="id" class="cartao-pokemon" @click="viewPokemon(pokemon)">
+              <h1>{{ pokemon.name }}</h1>
+              <span>{{ pokemon.id.toString().padStart(3, '0') }}</span>
               <div class="cartao-pokemon-img">
                 <transition appear enter-active-class="animate__animated animate__fadeInDown">
-                  <img :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`">
+                  <img :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`">
                 </transition>
               </div>
             </div>
             <!-- fim listagem dinâmica -->
+
           </transition-group>
+
           </div>
         </div>
       </div>
@@ -96,13 +100,10 @@ export default {
   name: 'Home',
   data: () => ({
     exibir: false,
-    exibirEvolucoes: false,
     pokemon: {},
-    pokemonEvolution: {},
     pokemons: [],
-    ordenacao: '',
+    order: '',
     search: '',
-    nomePokemon2: ''
   }),
   methods: {
     showPokemons() {
@@ -118,8 +119,9 @@ export default {
             pokemon.id = pokemon.url.split('/')[6]
             pokemon.name = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)
             this.pokemons.push(pokemon)
+            console.log('this pokemons ', this.pokemons)
           })
-          console.log(data)
+          console.log('data ', data)
           const pokemons = JSON.stringify(data)
           localStorage.setItem('Pokemons', pokemons)
         })
@@ -131,30 +133,33 @@ export default {
     exibirEvolucoesTransition() {
       this.exibirEvolucoes = true
     }, 
-    analisarPokemon(p) {
+    viewPokemon(pokemon) {
 
-      let name = p.name.toLowerCase()
+      let name = pokemon.name.toLowerCase()
 
       fetch(`https://pokeapi.co/api/v2/pokemon/${name}/`)
       .then(response => response.json())
-      .then(data => {
+      .then(data => { 
         this.pokemon = data
         this.pokemon.name = this.pokemon.name.charAt(0).toUpperCase() + this.pokemon.name.slice(1)
+        this.pokemon.moves.forEach((move) => {
+          move.move.name = move.move.name.charAt(0).toUpperCase() + move.move.name.slice(1)
+        })
       })
       .catch((error) => {
         console.log(error)
       })
 
       let alterarPokemon = false   
-      if((this.pokemon.id != p.id) && this.exibir) {
+      if((this.pokemon.id != pokemon.id) && this.exibir) {
         setTimeout(() => {
-          this.analisarPokemon(p)
+          this.viewPokemon(pokemon)
         }, 1000)
 
         alterarPokemon = true
       }
       this.exibir = !this.exibir
-      this.pokemon = p 
+      this.pokemon = pokemon
 
       if(!this.exibir && !alterarPokemon) {  
         this.pokemon = {}                 
@@ -172,8 +177,7 @@ export default {
       this.pokemons = pokemonsFiltrados
       console.log(this.pokemons)
     },
-    ordenacao(valorNovo) {
-      console.log(this.pokemons)
+    order(valorNovo) {
       if(valorNovo == 1) { 
         this.pokemons.sort((proximo, atual) => {   
           if(atual.id < proximo.id) {
@@ -234,8 +238,6 @@ body {
 .pokedex {
   padding: 20px;
   background-color: #ffffff;
-  -webkit-box-shadow: 2px 2px 10px rgba(200, 200, 200, 0.77);
-  -moz-box-shadow: 2px 2px 10px rgba(200, 200, 200, 0.77);
   box-shadow: 2px 2px 10px rgba(200, 200, 200, 0.77);
   border-radius: 10px;
 }
@@ -252,18 +254,17 @@ body {
 .cartao-pokemon {
   position: relative;
   margin: 5px;
-  width: 150px;
-  height: 115px;
+  width: 160px;
+  height: 125px;
   cursor: pointer;
   border-radius: 5px;
-  -webkit-box-shadow: 2px 2px 2px rgba(200, 200, 200, 0.77);
-  -moz-box-shadow: 2px 2px 2px rgba(200, 200, 200, 0.77);
   box-shadow: 2px 2px 2px rgba(200, 200, 200, 0.77);
+  background-color: #333;
 }
 
 .cartao-pokemon h1{
   color:#fff;
-  font-size: 14px;
+  font-size: 18px;
   margin: 5px 0px 0px 5px;
   padding: 0px;
 }
@@ -284,26 +285,6 @@ body {
     float: right;
 }
 
-.bg-grass {
-  background-color: #2d8f78;
-}
-
-.bg-fogo {
-  background-color: #e47373
-}
-
-.bg-agua {
-  background-color: #5a9ed2
-}
-
-.bg-inseto {
-  background-color: #26d3ab
-}
-
-.bg-normal {
-  background-color: #cecece
-}
-
 .bg-pokebola {
   background-image: url("~@/assets/imgs/pokebola.png");
   background-repeat: no-repeat;
@@ -313,8 +294,6 @@ body {
 .palco {
   color: #fff;
   background-color: #333;
-  -webkit-box-shadow: 2px 2px 10px rgba(230, 223, 223, 0.77);
-  -moz-box-shadow: 2px 2px 10px rgba(230, 223, 223, 0.77);
   box-shadow: 2px 2px 10px rgba(230, 223, 223, 0.77);
   border-radius: 10px;
 }
@@ -329,22 +308,15 @@ body {
   margin: 20px 30px 20px 30px;
 }
 
-.evolucoes {
-  position: absolute;
-  top: 10px;
-  right: 0px;
-  height: 70px;
-}
-
-.evolucoes img {
-  cursor: pointer;
-  max-width: 100%;
-  max-height: 100%;
-}
-
 .pokedex-logo {
   height: 60px;
   width: auto;
 }
 
+.img_palco {
+  position: relative;
+  top: 45px;
+  height: 190px;
+  width: 190px;
+}
 </style>

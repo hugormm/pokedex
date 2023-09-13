@@ -7,7 +7,7 @@
         <div v-else>
             <p>Id: {{ pokemon.id }}</p>
             <p>Name: {{ name }}</p>
-            <p>Type: {{ tipo }}</p>
+            <p>Type: {{ type }}</p>
         </div>   
     </div>
 </template>
@@ -19,10 +19,7 @@ export default {
         pokemon: Object
     },
     computed: {
-        id() {
-            return console.log('------', this.pokemon.id.toString().padStart(3, '0'))  // 001, 011
-        },
-        tipo() {
+        type() {
             if(this.pokemon.types) {
                 return this.pokemon.types[0].type.name.charAt(0).toUpperCase() + this.pokemon.types[0].type.name.slice(1)
             } else {
