@@ -72,3 +72,12 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+
+span {
+    font-family: 'Pokemon Solid';
+    color:#bcbcbc;
+}
+
+</style>

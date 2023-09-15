@@ -4,7 +4,7 @@
             Select one Pokemon
         </div>
         
-        <div v-else>
+        <div class="conteudo" v-else>
             <p>Id: {{ pokemon.id }}</p>
             <p>Name: {{ name }}</p>
             <p>Type: {{ type }}</p>
@@ -36,3 +36,11 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+
+.conteudo p {
+    font-family: 'Pokemon Solid';
+    color:#bcbcbc;
+}
+</style>

@@ -253,6 +253,7 @@ body {
 
 .cartao-pokemon {
   position: relative;
+  font-size: 10px;
   margin: 5px;
   width: 160px;
   height: 125px;
@@ -263,8 +264,9 @@ body {
 }
 
 .cartao-pokemon h1{
-  color:#fff;
-  font-size: 18px;
+  font-family: 'Pokemon Solid';
+  color:#bcbcbc;
+  font-size: 14px;
   margin: 5px 0px 0px 5px;
   padding: 0px;
 }

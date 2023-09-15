@@ -1,100 +1,3 @@
-/*FADE EFECT */
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
-
-.fade-enter-active {
-    transition: opacity 1s;
-}
-
-.fade-enter-to,
-.fade-leave-from {
-    opacity: 1;
-}
-
-.fade-leave-active {
-    transition: opacity 0.5s;
-}
-
-
-/*SLIDE EFECT */
-
-.slide-enter-from {
-    opacity: 0;
-    transform: translateX(-150px);
-}
-
-.slide-enter-active,
-.slide-leave-active {
-    transition: all 2s;
-}
-
-.slide-enter-to,
-.slide-leave-from {
-    opacity: 1;
-    transform: translateX(0px);
-}
-
-.slide-leave-to {
-    opacity: 0;
-    transform: translateX(150px);
-}
-
-/* ZOOM EFECT */
-
-
-.zoom-enter-from,
-.zoom-leave-to {
-    transform: scale(0);
-}
-
-.zoom-enter-active,
-.zoom-leave-active {
-    transition: transform 1s;
-}
-
-.zoom-enter-to,
-.zoom-leave-from {
-    transform: scale(1);
-}
-
-/* FLIP */
-.flip-enter-active {
-    animation: flipCostumizado 2s;
-}
-
-.flip-leave-active {
-    animation: flipCostumizado 2s reverse;      
-}
-
-@keyframes flip {
-    from {
-        transform: rotateY(-80deg);        
-    }
-    to {
-        transform: rotateY(0deg);
-    }
-}
-
-@keyframes flipCostumizado {
-    0% {
-        transform: rotateY(-80deg);        
-    }
-    25% {
-        transform: rotateY(-75deg);
-    }
-    50% {
-        transform: rotateY(-25deg);        
-    }
-    100% {
-        transform: rotateY(0deg);
-    }
-}
-
-/* ANIMACAO RETIRADA DO SITE KEYFRAMES:APP */
-
 .animacao-enter-active, .animacao-leave-active {
     animation: yourAnimation 6s ease-in-out 0s infinite normal none; 
 }
@@ -124,10 +27,6 @@
     }
 }
 
-
-/* combinando transition e animation  com a animacao estamos a dar o pulo e com a transicao estamos a dar o fade */
-/* PULO */
-/* animacao de entrada */
 .pulo-enter-from {
     opacity: 0;
 }
@@ -141,18 +40,17 @@
     opacity: 1;
 }
 
-/* transicao de saida */
 .pulo-leave-from {
     opacity: 1;
 }
 .pulo-leave-active {
     transition: opacity 1s;
-    animation: pulo 1s;   /* combinamos aqui tb o pulo para a saida */
+    animation: pulo 1s; 
 }
 .pulo-leave-to {
     opacity: 0;
 }
-/* animacao de entrada */
+
 @keyframes pulo {
     0% { transform: scale(1,1)  translateY(0); }
     10% { transform: scale(1.1,.9)  translateY(0); }
@@ -162,8 +60,6 @@
     64% { transform: scale(1,1)  translateY(0); }
     110% { transform: scale(1,1)  translateY(0); }
 }
-
-/* slide de cima para baixo (utilizando nomes de classes personalizados) */
 
 .entrada-estado-inicial {
     opacity: 0;
@@ -188,35 +84,6 @@
 .entrada-transicao, .saida-transicao {
     transition: all 2s;
 }
-
-
-/* ANIMACAI LISTA */
-
-.lista-enter-from,
-.lista-leave-to {
-    opacity: 0;
-}
-
-.lista-enter-active {
-    transition: opacity 1s;
-}
-
-.lista-enter-to,
-.lista-leave-from {
-    opacity: 1;
-}
-
-.lista-leave-active {
-    transition: opacity 0.5s;
-    position: absolute;
-}
-
-.lista-move {
-    transition: all 1s;
-}
-
-
-/* transition group para o filtro ordenacao */
 
 .ordenacao-move {
     transition: all 2s;
