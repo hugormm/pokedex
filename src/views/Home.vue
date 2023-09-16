@@ -178,11 +178,14 @@ export default {
       console.log(this.pokemons)
     },
     order(valorNovo) {
+      
       if(valorNovo == 1) { 
         this.pokemons.sort((proximo, atual) => {   
-          if(atual.id < proximo.id) {
+          const idAtual = parseInt(atual.id);
+          const idProximo = parseInt(proximo.id);
+          if(idAtual < idProximo) {
             return 1
-          } else if(atual.id > proximo.id) {
+          } else if(idAtual > idProximo) {
             return -1
           }
           return 0
@@ -190,10 +193,12 @@ export default {
       }
 
       if(valorNovo == 2) {  
-        this.pokemons.sort((proximo, atual) => {    
-          if(atual.id < proximo.id) {
+        this.pokemons.sort((proximo, atual) => {  
+          const idAtual = parseInt(atual.id);
+          const idProximo = parseInt(proximo.id);  
+          if(idAtual < idProximo) {
             return -1
-          } else if(atual.id > proximo.id) {
+          } else if(idAtual > idProximo) {
             return 1
           }
           return 0
