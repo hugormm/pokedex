@@ -68,23 +68,28 @@
         </div>
 
         <div class="row">
-          <div class="pokedex-catalogo d-flex justify-content-center">
 
-          <transition-group name="ordenacao">
+          <div v-if="loading" class="d-flex justify-content-center">
+            <img class="loading" src="@/assets/gif/loading.gif" alt="">
+          </div>
 
-            <!-- início listagem dinâmica -->
-            <div v-for="(pokemon, id) in pokemons" :key="id" class="cartao-pokemon" @click="viewPokemon(pokemon)">
-              <h1>{{ pokemon.name }}</h1>
-              <span>{{ pokemon.id.toString().padStart(3, '0') }}</span>
-              <div class="cartao-pokemon-img">
-                <transition appear enter-active-class="animate__animated animate__fadeInDown">
-                  <img :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`">
-                </transition>
-              </div>
-            </div>
-            <!-- fim listagem dinâmica -->
+          <div v-if="pokemons" class="pokedex-catalogo d-flex justify-content-center">
 
-          </transition-group>
+              <transition-group name="ordenacao">
+
+                <!-- início listagem dinâmica -->
+                <div v-for="(pokemon, id) in pokemons" :key="id" class="cartao-pokemon" @click="viewPokemon(pokemon)">
+                  <h1>{{ pokemon.name }}</h1>
+                  <span>{{ pokemon.id.toString().padStart(3, '0') }}</span>
+                  <div class="cartao-pokemon-img">
+                    <transition appear enter-active-class="animate__animated animate__fadeInDown">
+                      <img :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png`">
+                    </transition>
+                  </div>
+                </div>
+                <!-- fim listagem dinâmica -->
+
+                </transition-group>
 
           </div>
         </div>
@@ -104,6 +109,7 @@ export default {
     pokemons: [],
     order: '',
     search: '',
+    loading: false
   }),
   methods: {
     showPokemons() {
@@ -112,6 +118,7 @@ export default {
         let objPokemons = JSON.parse(pokemons)
         this.pokemons = objPokemons.results
       } else {
+        this.loading = true
         fetch('https://pokeapi.co/api/v2/pokemon?limit=806')
         .then(response => response.json())
         .then(data => {
@@ -119,8 +126,8 @@ export default {
             pokemon.id = pokemon.url.split('/')[6]
             pokemon.name = pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)
             this.pokemons.push(pokemon)
-            console.log('this pokemons ', this.pokemons)
           })
+          this.loading = false
           console.log('data ', data)
           const pokemons = JSON.stringify(data)
           localStorage.setItem('Pokemons', pokemons)
@@ -325,5 +332,12 @@ body {
   top: 45px;
   height: 190px;
   width: 190px;
+}
+
+.loading {
+  height: 100px;
+  width: 100px;
+  position: relative;
+  top: 100px;
 }
 </style>
