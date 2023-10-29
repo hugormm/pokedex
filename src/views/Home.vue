@@ -119,7 +119,7 @@ export default {
         this.pokemons = objPokemons.results
       } else {
         this.loading = true
-        fetch('https://pokeapi.co/api/v2/pokemon?limit=806')
+        fetch('https://pokeapi.co/api/v2/pokemon?limit=151')
         .then(response => response.json())
         .then(data => {
           data.results.forEach((pokemon) => {
@@ -276,8 +276,8 @@ body {
 }
 
 .cartao-pokemon h1{
-  font-family: 'Pokemon Solid';
-  color:#bcbcbc;
+  font-family: 'Pokemon Hollow';
+  color:#ffffff;
   font-size: 14px;
   margin: 5px 0px 0px 5px;
   padding: 0px;
@@ -286,7 +286,7 @@ body {
 .cartao-pokemon span{
   color:#fff;
   position: absolute;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.07);
   font-size: 12px;
   margin: 10px 0px 0px 5px;
   padding: 5px 10px 5px 10px;

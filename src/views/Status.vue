@@ -76,8 +76,8 @@ export default {
 <style scoped>
 
 span {
-    font-family: 'Pokemon Solid';
-    color:#bcbcbc;
+    font-family: 'Pokemon Hollow';
+    color:#ffffff;
 }
 
 </style>

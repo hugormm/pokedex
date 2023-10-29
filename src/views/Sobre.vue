@@ -40,7 +40,7 @@ export default {
 <style scoped>
 
 .conteudo p {
-    font-family: 'Pokemon Solid';
-    color:#bcbcbc;
+    font-family: 'Pokemon Hollow';
+    color:#ffffff;
 }
 </style>

@@ -27,10 +27,11 @@ export default {
 
 <style scoped>
 .table td {
-    font-family: 'Pokemon Solid';
+    font-family: 'Pokemon Hollow';
+    font-weight: 100;
     border: none;
     background-color: #333;
-    color:#bcbcbc;
+    color:#ffffff;
 }
 
 </style>
